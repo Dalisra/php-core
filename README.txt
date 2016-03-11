@@ -1,6 +1,6 @@
 Welcome to Core installation.
 
-1. Add core folder to your www folder (where webroot is).
+1. Add core folder (with lib folder and all "corestuff") to your www folder (where webroot is).
 2. Add .htaccess file to your www folder (where webroot is), that looks like this:
 
     #php_flag display_startup_errors on
@@ -16,8 +16,13 @@ Welcome to Core installation.
     RewriteRule ^$ default/webroot/ [L]
     RewriteRule ^(.*)$ default/webroot/$1 [L]
 
-3a. Add a default site folder named "default" or your client name.
+3a. Add a default site folder named "default" or your client name (with default site files).
 
-3b. If you added a folder that is not named "default" you will have to create a symlink to your clients folder.
+3b. If you added a folder that is NOT named "default" you will have to create a symlink to the other folder that you created.
+
+4. Create empty "logs" folder in your www folder (where webroot is).
 
 4. Enjoy your site!
+
+5. [Optional] Create more default site folders and change between them by changing what symlink is linking to.
+    Or you can change .htaccess file that you created to support several sites.
