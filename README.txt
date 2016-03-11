@@ -9,7 +9,7 @@ Welcome to Core installation.
 
     # enable PHP error logging
     #php_flag  log_errors on
-    #php_value error_log  /var/www/html/error.log
+    #php_value error_log  /var/www/html/logs/error.log
 
     #Options +FollowSymLinks -MultiViews -indexes
     RewriteEngine on
@@ -19,10 +19,16 @@ Welcome to Core installation.
 3a. Add a default site folder named "default" or your client name (with default site files).
 
 3b. If you added a folder that is NOT named "default" you will have to create a symlink to the other folder that you created.
+    Make sure you stand in your www folder (where webroot is) and run this command:
+    ln -s [yourfolder] default
 
 4. Create empty "logs" folder in your www folder (where webroot is).
 
-4. Enjoy your site!
+5. Make folder core/lib/Smarty/templates_c writable: chmod 777 [path] -R
 
-5. [Optional] Create more default site folders and change between them by changing what symlink is linking to.
+6. Make folder core/lib/Smarty/cache writable: chmod 777 [path] -R
+
+99. Enjoy your site!
+
+100. [Optional] Create more default site folders and change between them by changing what symlink is linking to.
     Or you can change .htaccess file that you created to support several sites.
