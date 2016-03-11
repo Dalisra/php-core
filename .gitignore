@@ -1,0 +1,3 @@
+lib/Smarty/templates_c/*.php
+lib/Smarty/cache/*.php
+lib/config/db.php
