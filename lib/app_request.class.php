@@ -187,7 +187,9 @@ class APP_Request {
     }
 
     function getMessages(){
-        return $_SESSION['messages'];
+        if(isset($_SESSION['messages'])){
+            return $_SESSION['messages'];
+        }else return [];
     }
     function removeMessages() {
         $_SESSION['messages'] = Null;

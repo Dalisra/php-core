@@ -93,10 +93,13 @@ class Init {
 
     private function initializeDBConnection(){
         require 'app_db.class.php';
-        require ROOT . DS . 'config' . DS . 'db.php';
-        $db_conf = $db_conf[$this->env];
-        APP::$db = new APP_DB($db_conf['host'], $db_conf['user'], $db_conf['password'], $db_conf['database'], $db_conf['port']);
-        unset($db_conf);
+        $dbConfFilePath = ROOT . DS . 'config' . DS . 'db.php';
+        if(file_exists($dbConfFilePath)) {
+            require $dbConfFilePath;
+            $db_conf = $db_conf[$this->env];
+            APP::$db = new APP_DB($db_conf['host'], $db_conf['user'], $db_conf['password'], $db_conf['database'], $db_conf['port']);
+            unset($db_conf);
+        }
     }
 
     private function initializeSmarty(){
@@ -117,24 +120,29 @@ class Init {
     }
 
     private function checkIfWeHaveDBConnection(){
-        if (!APP::$db->connected){
-            //TODO: return a 503 error - 503 Service Unavailable
-            // http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
-            APP::$smarty->assign("error_msg", "Feil har oppstått. Vennligst prøv igjen!");
-            APP::$smarty->assign("error_nr", "001");
-            if(APP::$conf["enable_debug_msg"]){
-                APP::$smarty->assign("debug_msg", APP::$db->db_error);
+        if(isset(APP::$db)){
+            if (!APP::$db->connected){
+                //TODO: return a 503 error - 503 Service Unavailable
+                // http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+                APP::$smarty->assign("error_msg", "Feil har oppstått. Vennligst prøv igjen!");
+                APP::$smarty->assign("error_nr", "001");
+                if(APP::$conf["enable_debug_msg"]){
+                    APP::$smarty->assign("debug_msg", APP::$db->db_error);
+                }
+                $protocol = "HTTP/1.0";
+                if ( "HTTP/1.1" == $_SERVER["SERVER_PROTOCOL"] ){
+                    $protocol = "HTTP/1.1";
+                }
+                header( "$protocol 503 Service Unavailable", true, 503 );
+                header( "Retry-After: 60" ); //60 seconds.
+                APP::$log->error("Displaying 503 error. No connection to database.");
+                APP::$smarty->display('error_pages/503.tpl');
+                APP::$request->quit();
             }
-            $protocol = "HTTP/1.0";
-            if ( "HTTP/1.1" == $_SERVER["SERVER_PROTOCOL"] ){
-                $protocol = "HTTP/1.1";
-            }
-            header( "$protocol 503 Service Unavailable", true, 503 );
-            header( "Retry-After: 60" ); //60 seconds.
-            APP::$log->error("Displaying 503 error. No connection to database.");
-            APP::$smarty->display('error_pages/503.tpl');
-            APP::$request->quit();
+        
         }
+        //TODO: decide what to do if APP:$db is not set? It means no db config file.. no db needed or error?
+        
     }
 
     private function initializeAuthentication(){
