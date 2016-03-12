@@ -30,24 +30,6 @@ class Init {
         //exit;
     }
 
-    function initializeAdmin(){
-        $this->includeSiteTools();
-        $this->startSession();
-        $this->initializeAppClass();
-        $this->initializeAdminConfig();
-        $this->initializeAdminLogger();
-        $this->addAdminLogger();
-        $this->initializeDBConnection();
-        $this->initializeSmarty();
-        $this->initializeRequestClass();
-        $this->checkIfWeHaveDBConnection();
-        $this->initializeAuthentication();
-        $this->initializeGlobals();
-
-        //use this to test smarty configuration
-        //APP::$smarty->testInstall();
-    }
-
     private function includeSiteTools(){
         require 'site_tools.php'; //include simple tools
         $GLOBALS['timer'] = new Timer(); //start timer to record how long it takes to process the request
@@ -66,12 +48,10 @@ class Init {
     }
 
     private function initializeConfig(){
-        require ROOT . DS . 'config' . DS . 'config.php';
-        APP::$conf = $conf[$this->env];
-    }
-
-    private function initializeAdminConfig(){
-        require ROOT . DS . 'config' . DS . 'config_admin.php';
+        require CORE . DS . 'config' . DS . 'config.php'; // Produces $conf variable and sets default values in it.
+        require ROOT . DS . 'config' . DS . 'config.php'; // Overrides or adds new values to $conf variable.
+        
+        //setting this config object in as global variable.
         APP::$conf = $conf[$this->env];
     }
 
@@ -79,16 +59,6 @@ class Init {
         include(APP::$conf['path']['log4php'] . "Logger.php");
         Logger::configure(APP::$conf['path']['log4php_conf']);
         APP::$log = Logger::getLogger("com.dalisra");
-    }
-
-    private function initializeAdminLogger(){
-        include(APP::$conf['path']['log4php'] . "Logger.php");
-        Logger::configure(APP::$conf['path']['log4php_conf']);
-        APP::$log = Logger::getLogger("com.dalisra.admin");
-    }
-
-    private function addAdminLogger(){
-        APP::$log = Logger::getLogger("com.dalisra.admin");
     }
 
     private function initializeDBConnection(){
@@ -195,8 +165,7 @@ class Init {
         APP::$smarty->assign("messages", APP::$request->getMessages());
         APP::$request->removeMessages();
         
-        //
-        /** 
+        /*
          * setting environment variable so that design can do some stuff depending on environment
          * Example could be displaying google tag manager or google maps only in test and production.
          */
