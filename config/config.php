@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * TODO: Make the most important configs into CONTANTS/PROPERTIES.
+ * Ex. $CORE_CONTROLLERS_PATH, $CORE_LIB_PATH...
+ * /
+
 $conf = array();
 $conf['prod'] = array();
 $conf['test'] = array();
@@ -29,9 +34,9 @@ $conf['devel']['path']['controllers'] = $conf['devel']['path']['full']. 'control
  * $conf['evn']['smarty']['templates'] depends on this!
  * TODO: find out a better way for this to work.
  */
-$conf['prod']['path']['view'] = $conf['prod']['path']['full'] . 'view' . DS;
-$conf['test']['path']['view'] = $conf['prod']['path']['full'] . 'view' . DS;
-$conf['devel']['path']['view'] = $conf['devel']['path']['full'] . 'view' . DS;
+$conf['prod']['path']['views'] = $conf['prod']['path']['full'] . 'views' . DS;
+$conf['test']['path']['views'] = $conf['prod']['path']['full'] . 'views' . DS;
+$conf['devel']['path']['views'] = $conf['devel']['path']['full'] . 'views' . DS;
 
 /* Page configurations */
 $conf['prod']['showTimer'] = false;
@@ -46,16 +51,20 @@ $conf['devel']['enable_debug_msg'] = true;
 
 /* START CORE STUFF */
 
-
-/* Full path to the core */
-$conf['prod']['path']['core'] = CORE . DS;
-$conf['test']['path']['core'] = CORE . DS;
-$conf['devel']['path']['core'] = CORE . DS;
-
 /* Path to the library */
 $conf['prod']['path']['lib'] = CORE . DS . 'lib' . DS;
 $conf['test']['path']['lib'] = CORE . DS . 'lib' . DS;
 $conf['devel']['path']['lib'] = CORE . DS . 'lib' . DS;
+
+/* Path to the core controllers */
+$conf['prod']['path']['core']['controllers'] = CORE . DS . 'controllers' . DS;
+$conf['test']['path']['core']['controllers'] = CORE . DS . 'controllers' . DS;
+$conf['devel']['path']['core']['controllers'] = CORE . DS . 'controllers' . DS;
+
+/* Path to the core views */
+$conf['prod']['path']['core']['views'] = CORE . DS . 'views' . DS;
+$conf['test']['path']['core']['views'] = CORE . DS . 'views' . DS;
+$conf['devel']['path']['core']['views'] = CORE . DS . 'views' . DS;
 
 /* Smarty configuration */
 $conf['prod']['path']['smarty'] = $conf['prod']['path']['lib'] . 'Smarty' . DS . 'Smarty-3.1.29' . DS;
@@ -66,9 +75,9 @@ $conf['prod']['smarty']['templates_c'] = $conf['prod']['path']['lib'] . 'Smarty'
 $conf['test']['smarty']['templates_c'] = $conf['prod']['path']['lib'] . 'Smarty' . DS . 'templates_c' . DS;
 $conf['devel']['smarty']['templates_c'] = $conf['devel']['path']['lib'] . 'Smarty' . DS . 'templates_c' . DS;
 
-$conf['prod']['smarty']['templates'] = $conf['prod']['path']['view'];
-$conf['test']['smarty']['templates'] = $conf['prod']['path']['view'];
-$conf['devel']['smarty']['templates'] = $conf['devel']['path']['view'];
+$conf['prod']['smarty']['templates'] = $conf['prod']['path']['views'];
+$conf['test']['smarty']['templates'] = $conf['prod']['path']['views'];
+$conf['devel']['smarty']['templates'] = $conf['devel']['path']['views'];
 
 $conf['prod']['smarty']['cache'] = $conf['prod']['path']['lib'] . 'Smarty' . DS . 'cache' . DS;
 $conf['test']['smarty']['cache'] = $conf['prod']['path']['lib'] . 'Smarty' . DS . 'cache' . DS;
@@ -87,9 +96,9 @@ $conf['test']['smarty']['debug_compile_time'] = true;
 $conf['devel']['smarty']['debug_compile_time'] = true;
 
 /* Log4PHP configuration */
-$conf['prod']['path']['log4php'] = $conf['prod']['path']['core'] . 'lib' . DS . 'log4php' . DS . '2.3.0' . DS;
-$conf['test']['path']['log4php'] = $conf['prod']['path']['core'] . 'lib' . DS . 'log4php' . DS . '2.3.0' . DS;
-$conf['devel']['path']['log4php'] = $conf['devel']['path']['core'] . 'lib' . DS . 'log4php' . DS . '2.3.0' . DS;
+$conf['prod']['path']['log4php'] = $conf['prod']['path']['lib'] . 'log4php' . DS . '2.3.0' . DS;
+$conf['test']['path']['log4php'] = $conf['prod']['path']['lib'] . 'log4php' . DS . '2.3.0' . DS;
+$conf['devel']['path']['log4php'] = $conf['devel']['path']['lib'] . 'log4php' . DS . '2.3.0' . DS;
 
 $conf['prod']['path']['log4php_conf'] = $conf['prod']['path']['full'] . 'config' . DS . 'log4php.xml';
 $conf['test']['path']['log4php_conf'] = $conf['prod']['path']['full'] . 'config' . DS . 'log4php.xml';

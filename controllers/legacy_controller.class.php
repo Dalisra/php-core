@@ -7,7 +7,7 @@ class APP_Controller {
     var $item;
     var $fields = array("name, active");
 	
-    function App_Controller(){
+    function App_Controller() {
             $this->log = Logger::getLogger("com.dalisra.controller");
     }
 	

@@ -76,7 +76,7 @@ class APP_Request {
 
             }else{ //controller does not exists, we display 404 error with parent controller
                 $this->log->debug("Controller does not exist, we load default controller and display 404 error.");
-                require_once 'app_controller.class.php';
+                require_once 'legacy_controller.class.php';
                 APP::$controller = new APP_Controller();
                 APP::$controller->displayPageNotFoundError();
             }
@@ -105,7 +105,7 @@ class APP_Request {
                 APP::$controller->adminProcess();
 
             }else{ //controller does not exists, we display 404 error with parent controller
-                require_once 'app_controller.class.php';
+                require_once 'legacy_controller.class.php';
                 APP::$controller = new APP_Controller();
                 APP::$controller->displayPageNotFoundError();
             }
@@ -173,17 +173,28 @@ class APP_Request {
 
 
     /**
-     * 0 - Message(green), 1 - Info(blue), 2 - Error(red).
+     * success - Green, info - Blue, warning - Yellow, danger/error - Red
      * @param $msg
      * @param $status_id
      */
-    function setMessage($msg, $status_id=0) {
-        $_SESSION['messages'][] = Array($status_id, $msg);
+    function addMessage($type, $msg) {
+        $_SESSION['messages'][$type][] = $msg;
     }
 
-    function setMessages($msgs=Array()) {
-        foreach ((array) $msgs as $field => $msg)
-            $_SESSION['messages'][$field] = Array(0, $msg);
+    function addSuccess($msg) {
+        $this->addMessage("success", $msg);
+    }
+
+    function addInfo($msg) {
+        $this->addMessage("info", $msg);
+    }
+
+    function addWarning($msg) {
+        $this->addMessage("warning", $msg);
+    }
+
+    function addError($msg) {
+        $this->addMessage("error", $msg);
     }
 
     function getMessages(){
@@ -191,24 +202,8 @@ class APP_Request {
             return $_SESSION['messages'];
         }else return [];
     }
+
     function removeMessages() {
-        $_SESSION['messages'] = Null;
-    }
-
-    function setErrors($errors=Array()) {
-        foreach ((array) $errors as $field => $error_str)
-            $_SESSION['messages'][$field] = Array(2, $error_str);
-    }
-
-    function setError($error) {
-        $this->setMessage($error, 2);
-    }
-
-    function setInfoMessage($infoMessage) {
-        $_SESSION['messages'][] = Array(1, $infoMessage);
-    }
-
-    function setWarningMessage($warningMessage) {
-        $_SESSION['messages'][] = Array(3, $warningMessage);
+        $_SESSION['messages'] = null;
     }
 }

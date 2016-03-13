@@ -15,11 +15,9 @@ class APP_Auth {
         $this->refreshFromSession();
     }
 
-    function login() {
-        list($u, $p) = $_POST["login"];
-
+    function login($username, $password) {
         $params['from'] = APP::$conf['auth']['table'];
-        $params['where'] = array('username' => $u, 'password' => md5($p));
+        $params['where'] = array('username' => $username, 'password' => md5($password));
         $params['limit'] = 1;
         $reply = APP::$db->getData($params);
         if ($reply && isset($reply[0])) {
@@ -27,16 +25,14 @@ class APP_Auth {
             $_SESSION["login"] = true;
             $_SESSION["user"] = $reply[0];
             $this->refreshFromSession();
-            $item = array();
-            $item['logins'] = $reply[0]['logins'] + 1;
-            APP::$db->updateDataById($params['from'], $item, $reply[0]['id']);
-            APP::$request->setMessage("Login successfull.");
+            APP::$request->addSuccess("Login successfull.");
         } else {
             // wrong user/pass
             $_SESSION["login"] = false;
-            APP::$request->setError("Username and password combination is wrong. Try again.");
-            APP::$request->jump($_REQUEST['url']);
+            APP::$request->addError("Username and password combination is wrong. Try again.");
         }
+
+        return $this->isLoggedIn;
     }
 
     function logout() {
@@ -44,12 +40,9 @@ class APP_Auth {
         unset($_SESSION['login']);
         unset($_SESSION['user']);
         $this->refreshFromSession();
-        APP::$request->setMessage("You have been logged out.");
-        if(isset($_REQUEST['redir'])){
-            APP::$request->jump($_REQUEST['redir']);
-        }else{
-            APP::$request->jump();
-        }
+        APP::$request->addMessage("You have been logged out.");
+
+        return $this->isLoggedIn;
     }
 
     function refreshFromSession(){

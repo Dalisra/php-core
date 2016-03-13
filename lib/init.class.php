@@ -124,17 +124,19 @@ class Init {
             if ($_REQUEST['pre_act'] == "do_login") {
                 usleep(500000);
                 if (isset($_POST['login'])) {
-                    APP::$auth->login();
-                    APP::$request->jump(APP::$request->url); //we jump to make sure that user can refresh his page without having to send data again.
+                    list($u, $p) = $_POST["login"];
+                    APP::$auth->login($u, $p);
+                    APP::$request->jump();
                 }
                 else{
-                    APP::$request->setError("Username and password can not be empty.");
-                    APP::$request->jump(APP::$request->url);
+                    APP::$request->addError("Username and password can not be empty.");
+                    APP::$request->jump();
                 }
             } elseif ($_REQUEST['pre_act'] == "do_logout") {
                 APP::$auth->logout();
+                APP::$request->jump();
             } else {
-                APP::$request->setErrors(Array("Unknow Command"));
+                APP::$request->addError("Unknown Command");
             }
         }
         APP::$smarty->assign("isLoggedIn", APP::$auth->isLoggedIn);
