@@ -16,17 +16,20 @@ Welcome to Core installation.
     RewriteRule ^$ default/webroot/ [L]
     RewriteRule ^(.*)$ default/webroot/$1 [L]
 
-3a. Add a default site folder named "default" or your client name (with default site files).
+3a. Add a default site folder named as your client name (with default site files).
 
 3b. If you added a folder that is NOT named "default" you will have to create a symlink to the other folder that you created.
     Make sure you stand in your www folder (where webroot is) and run this command:
     ln -s [yourfolder] default
+    For windows bruk mklink kommando.
 
 4. Create empty "logs" folder in your www folder (where webroot is).
 
 5. Make folder core/lib/Smarty/templates_c writable: chmod 777 [path] -R
+    For windows you dont need.
 
 6. Make folder core/lib/Smarty/cache writable: chmod 777 [path] -R
+    For windows you dont need.
 
 99. Enjoy your site!
 
