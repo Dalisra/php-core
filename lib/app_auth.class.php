@@ -40,7 +40,7 @@ class APP_Auth {
         unset($_SESSION['login']);
         unset($_SESSION['user']);
         $this->refreshFromSession();
-        APP::$request->addMessage("You have been logged out.");
+        APP::$request->addSuccess("You have been logged out.");
 
         return $this->isLoggedIn;
     }
