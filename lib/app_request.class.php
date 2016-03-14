@@ -76,7 +76,7 @@ class APP_Request {
 
             }else{ //controller does not exists, we display 404 error with parent controller
                 $this->log->debug("Controller does not exist, we load default controller and display 404 error.");
-                require_once 'legacy_controller.class.php';
+                require_once APP::$conf['path']['core']['controllers'] . 'legacy_controller.class.php';
                 APP::$controller = new APP_Controller();
                 APP::$controller->displayPageNotFoundError();
             }
