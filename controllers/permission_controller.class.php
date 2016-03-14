@@ -7,7 +7,7 @@ class Permission_Controller {
      * Overriding standard method with custom action.
      */
     function process(){
-        if( !APP::$auth->isLoggedIn) APP::$request->jump("login");
+        if( !APP::$auth->isLoggedIn) APP::$request->jump("authorize");
         else $this->processWithPermission();
     }
 
