@@ -1,6 +1,3 @@
-# php-core
-Simple PHP Framework for creating websites. This is Core Part of the framework.
-
 Welcome to Core installation.
 
 1. Add core folder (with lib folder and all "corestuff") to your www folder (where webroot is).
@@ -10,11 +7,11 @@ Welcome to Core installation.
     #php_flag display_startup_errors on
     #php_flag display_errors on
     #php_flag html_errors on
-    
+
     # enable PHP error logging
     #php_flag  log_errors on
     #php_value error_log  /var/www/html/logs/error.log
-    
+
     #Options +FollowSymLinks -MultiViews -indexes
     RewriteEngine on
     RewriteRule ^$ default/webroot/ [L]
@@ -31,10 +28,10 @@ Welcome to Core installation.
 4. Create empty "logs" folder in your www folder (where webroot is).
 
 5. Make folder core/lib/Smarty/templates_c writable: chmod 777 [path] -R
-    For windows you dont need.
+    * Not needed for windows.
 
 6. Make folder core/lib/Smarty/cache writable: chmod 777 [path] -R
-    For windows you dont need.
+    * Not needed for windows.
 
 99. Enjoy your site!
 
