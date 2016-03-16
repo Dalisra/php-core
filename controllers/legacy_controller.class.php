@@ -1,13 +1,13 @@
 <?php
 
-class APP_Controller {
+class Legacy_Controller {
 
     private $log;
     var $table;
     var $item;
     var $fields = array("name, active");
 	
-    function App_Controller() {
+    function Legacy_Controller() {
             $this->log = Logger::getLogger("com.dalisra.controller");
     }
 	
