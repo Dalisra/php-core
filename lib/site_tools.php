@@ -18,7 +18,13 @@ function isValidInteger($item){
  * Autoloading classes from controllers in both core and site and lib folders.
  */
 spl_autoload_register(function ($class_name) {
-    $folderNames = [APP::$conf['path']['controllers'], APP::$conf['path']['core']['controllers'], APP::$conf['path']['lib']];
+    $folderNames = [
+        APP::$conf['path']['controllers'],
+        APP::$conf['path']['models'],
+        APP::$conf['path']['core']['controllers'],
+        APP::$conf['path']['lib'],
+        APP::$conf['path']['core']['models'],
+    ];
     $fileName = strtolower($class_name) . '.class.php';
     foreach($folderNames as $folderName){
         if(file_exists($folderName.$fileName)){
@@ -26,3 +32,14 @@ spl_autoload_register(function ($class_name) {
         }
     }
 });
+
+function startsWith($haystack, $needle)
+{
+    $length = strlen($needle);
+    return (substr($haystack, 0, $length) === $needle);
+}
+function endsWith($haystack, $needle)
+{
+    substr($haystack, -strlen($needle))===$needle;
+}
+
