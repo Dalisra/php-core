@@ -47,7 +47,7 @@ _Optional:_
 You can also give the site folder a name of your choosing, and use symlinks to get the same behaviour, though this can produce some issues.
 See _Symlinking the core and site folders_ in the _Additional guides_ section.
 
-#### 4. Create log folders
+#### 4. Create log folder
 PHP-Core uses the log4php library for logging, and will put log files in the "logs" folder of your webserver root.
 This may not be necessary on all operating systems, but it is good practice to make sure that you have the folder installed.
 
