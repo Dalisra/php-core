@@ -82,7 +82,7 @@ On Windows:
 
     mklink /D site-default [your_folder_name]
 
-#### The complete directory structure
+### The complete directory structure
 
     \some\path\to\your\www\
     ├───core
