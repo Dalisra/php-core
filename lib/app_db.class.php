@@ -55,7 +55,7 @@ class APP_DB extends mysqli {
      * @return object objs[]
      */
     //TODO: lage egen klasse for params klassen. Query klasse.
-    function getData($params, $result_type= MYSQL_ASSOC, $class = null) {
+    function getData($params, $result_type= MYSQLI_ASSOC, $class = null) {
 		
         if ($this->connect_errno) {
             return false;
