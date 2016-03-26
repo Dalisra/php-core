@@ -13,7 +13,6 @@ $conf['devel'] = array();
 
 /* START SITE STUFF */
 
-
 /* Full path to the content */
 $conf['prod']['path']['full'] = ROOT . DS;
 $conf['test']['path']['full'] = ROOT . DS;
@@ -28,6 +27,11 @@ $conf['devel']['path']['images'] = $conf['devel']['path']['full'] . 'webroot' . 
 $conf['prod']['path']['controllers'] = $conf['devel']['path']['full'] . 'controllers' . DS;
 $conf['test']['path']['controllers'] = $conf['devel']['path']['full'] . 'controllers' . DS;
 $conf['devel']['path']['controllers'] = $conf['devel']['path']['full']. 'controllers' . DS;
+
+/* Path to services */
+$conf['prod']['path']['services'] = $conf['devel']['path']['full'] . 'services' . DS;
+$conf['test']['path']['services'] = $conf['devel']['path']['full'] . 'services' . DS;
+$conf['devel']['path']['services'] = $conf['devel']['path']['full']. 'services' . DS;
 
 /* Path to the view / templates
  * !OBS remember to override smarty path for templates if you override this one!

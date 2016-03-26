@@ -20,6 +20,7 @@ function isValidInteger($item){
 spl_autoload_register(function ($class_name) {
     $folderNames = [
         APP::$conf['path']['controllers'],
+        APP::$conf['path']['services'],
         APP::$conf['path']['models'],
         APP::$conf['path']['core']['controllers'],
         APP::$conf['path']['lib'],
