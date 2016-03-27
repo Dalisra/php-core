@@ -37,4 +37,21 @@ class APP_Controller {
         $this->log->error("Displaying 501 error. Missing Smarty template, request: " . print_r($_REQUEST, true));
         APP::$smarty->display('error_pages/501.tpl');
     }
+
+    public static function factory($name)
+    {
+        /** TODO: WTF is this shit, needs to be fixed. For some reason it would not load core classes here. */
+        if($name == 'App_Controller') {
+            $classname = $name;
+            require_once(APP::$conf['path']['core']['controllers'] . 'app_controller.class.php');
+        } else {
+            $classname = ucwords($name) . '_Controller';
+            require_once(APP::$conf['path']['controllers'] . strtolower($name) . '.class.php');
+        }
+        return new $classname;
+    }
+
+    public static function getActionName($name) {
+        return 'process' . ucwords($name);
+    }
 }
