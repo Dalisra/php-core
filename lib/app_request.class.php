@@ -55,6 +55,8 @@ class APP_Request {
                 try {
                     //check if we are calling a speciffic process function
                     $this->log->debug("Trying to find out if we should call speccific function in controller");
+                    $newPathArray = $this->path_arr;
+                    array_shift($newPathArray); // remove first url
                     if(isset($this->path_arr[1]) && strlen($this->path_arr[1]) > 0){
                         $this->log->debug("path_arr nr 1 is defined, trying to load specific function: " . $this->path_arr[1]);
                         $processName = "process".ucwords($this->path_arr[1]);
@@ -62,12 +64,15 @@ class APP_Request {
                             $this->log->debug("calling function $processName");
                             APP::$controller->$processName();
                         }else{
-                            $this->log->debug("$controllerClass does not have function $processName, redirecting user to correct url: " . $this->path_arr[0]);
-                            $this->jump($this->path_arr[0]);
+                            //$this->log->debug("$controllerClass does not have function $processName, redirecting user to correct url: " . $this->path_arr[0]);
+                            //$this->jump($this->path_arr[0]);
+
+                            $this->log->debug("Calling default process function");
+                            APP::$controller->process($newPathArray);
                         }
                     }else{ //call the default process function
                         $this->log->debug("Calling default process function");
-                        APP::$controller->process();
+                        APP::$controller->process($newPathArray);
                     }
                 } catch (SmartyException $e) {
                     APP::$log->error($e);
@@ -82,34 +87,6 @@ class APP_Request {
             }
         }else{
             $this->log->debug("Path Arr is empty.. Something must be wrong, returning 503 error");
-            //Something went wrong with processing url, we display 503 error.
-            APP::$smarty->display('error_pages/503.tpl');
-        }
-    }
-
-    function processAdminRequest(){
-        //TODO: implement url_mapping
-        if(isset($this->path_arr[0])){
-            $controllerName = strtolower($this->path_arr[0]);
-            //check if its index
-            if($controllerName == ''){
-                $controllerName = 'index';
-            }
-            //lets find out if we have any controller
-            $controllerFile = APP::$conf['path']['controllers'] . $controllerName . '.class.php';
-            if(file_exists($controllerFile)){ //controller exists we try to load it
-                //TODO: use try catch arround this
-                require_once($controllerFile);
-                $controllerClass = ucwords($controllerName) . "_Controller";
-                APP::$controller = new $controllerClass();
-                APP::$controller->adminProcess();
-
-            }else{ //controller does not exists, we display 404 error with parent controller
-                require_once 'legacy_controller.class.php';
-                APP::$controller = new APP_Controller();
-                APP::$controller->displayPageNotFoundError();
-            }
-        }else{
             //Something went wrong with processing url, we display 503 error.
             APP::$smarty->display('error_pages/503.tpl');
         }
