@@ -9,9 +9,10 @@
 
 class Init {
     //Tells what environment we are in.
-    var $env = "devel";
+    var $env;
 
-    function initialize(){
+    function initialize($environment = "devel"){
+        $this->env = $environment;
         //include site tools
         $this->includeSiteTools();
         $this->startSession();
