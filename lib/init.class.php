@@ -68,7 +68,7 @@ class Init {
         if(file_exists($dbConfFilePath)) {
             require $dbConfFilePath;
             $db_conf = $db_conf[$this->env];
-            APP::$db = new APP_DB($db_conf['host'], $db_conf['user'], $db_conf['password'], $db_conf['database'], $db_conf['port']);
+            APP::$db = new APP_DB($db_conf['host'], $db_conf['user'], $db_conf['password'], $db_conf['database'], $db_conf['port'], $db_conf['prefix']);
             unset($db_conf);
         }
     }

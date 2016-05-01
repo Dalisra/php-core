@@ -24,13 +24,15 @@ class APP_DB extends mysqli {
     var $sql;
     var $connected;
     var $log;
+    var $prefix;
     /**
      * @var mysqli_result
      */
     var $result;
 
-    function APP_DB($host, $user, $password, $dbname, $port = 3306) {
+    function APP_DB($host, $user, $password, $dbname, $port = 3306, $prefix = false) {
     	$this->log = Logger::getLogger("com.dalisra.DB");
+        $this->prefix = $prefix;
         mysqli_report(MYSQLI_REPORT_STRICT);  // tell mysqli to throw exceptions.
         try{
             parent::mysqli($host, $user, $password, $dbname, $port);
@@ -84,12 +86,15 @@ class APP_DB extends mysqli {
             $from = '';
             if(is_array($params['from'])) {
                 foreach ($params['from'] as $arg) {
+                    if($this->prefix) $arg = $this->prefix . $arg;
                     $from .= $this->escape_string($arg) . ",";
                 }
                 $from = substr($from, 0, -1); //removing last comma
             }
             else{
-                $from = $this->escape_string($params['from']);
+                $fromTable = $params['from'];
+                if($this->prefix) $fromTable = $this->prefix . $params['from'];
+                $from = $this->escape_string($fromTable);
             }
         } else {
             $this->setError("You need to select at least one table");
@@ -104,7 +109,9 @@ class APP_DB extends mysqli {
             $joinExists = true;
             $joinNr = '';
             while ($joinExists){
-                $leftjoin .= " LEFT JOIN " . $this->escape_string($params["leftjoin$joinNr"]);
+                $joinTableName = $params["leftjoin$joinNr"];
+                if($this->prefix) $joinTableName = $this->prefix . $joinTableName;
+                $leftjoin .= " LEFT JOIN " . $this->escape_string($joinTableName);
                 if(isset($params["on$joinNr"])){
                     if(is_array($params["on$joinNr"])){
                         foreach($params["on$joinNr"] as $key => $value){
@@ -137,7 +144,11 @@ class APP_DB extends mysqli {
 			$joinExists = true;
 			$joinNr = '';
 			while ($joinExists){
-				$join .= " JOIN " . $this->escape_string($params["join$joinNr"]);
+
+                $joinTableName = $params["join$joinNr"];
+                if($this->prefix) $joinTableName = $this->prefix . $joinTableName;
+
+				$join .= " JOIN " . $this->escape_string($joinTableName);
 				if(isset($params["on$joinNr"])){
 					if(is_array($params["on$joinNr"])){
 						foreach($params["on$joinNr"] as $key => $value){
@@ -255,6 +266,7 @@ class APP_DB extends mysqli {
     }
 
     function updateDataById($table, $item, $id) {
+        if($this->prefix) $table = $this->prefix . $table;
         //Prepare new SQL execution
         $this->clearResult();
         if (isset($item['id'])) {
@@ -279,6 +291,7 @@ class APP_DB extends mysqli {
     }
 
     function deleteDataById($table, $id) {
+        if($this->prefix) $table = $this->prefix . $table;
         //Prepare new SQL execution
         $this->clearResult();
         $itemId = (int)$id;
@@ -328,6 +341,7 @@ class APP_DB extends mysqli {
      * @return bool|mixed
      */
     function insertData($table, $item) {
+        if($this->prefix) $table = $this->prefix . $table;
         $this->clearResult();
         $table = $this->escape_string($table);
         $this->sql = "INSERT INTO $table ";
