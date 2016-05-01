@@ -26,6 +26,10 @@ class APP_Auth {
             $_SESSION["user"] = $reply[0];
             $this->refreshFromSession();
             APP::$request->addSuccess("Login successfull.");
+            if(isset($_SESSION["user"]['logins'])) {
+                $_SESSION["user"]['logins'] += 1;
+                APP::$db->updateDataById($params['from'], $_SESSION["user"], $reply[0]['id']);
+            }
         } else {
             // wrong user/pass
             $_SESSION["login"] = false;
