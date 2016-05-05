@@ -265,6 +265,16 @@ class APP_DB extends mysqli {
         }
     }
 
+    function getDataById($table, $id){
+        $params = array();
+        $params['from'] = $table;
+        $params['where'] = array("id"=>(int)$id);
+        $results = $this->getData($params);
+        if(isset($results[0])){
+            return $results[0];
+        }else return false;
+    }
+
     function updateDataById($table, $item, $id) {
         if($this->prefix) $table = $this->prefix . $table;
         //Prepare new SQL execution
