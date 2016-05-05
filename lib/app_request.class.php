@@ -10,6 +10,8 @@ class APP_Request {
     var $log;
     var $path_arr;
     var $full_url;
+    var $controller_url;
+    var $controller_action;
 
     function __construct() {
         $this->log = Logger::getLogger("com.dalisra.request");
@@ -56,22 +58,25 @@ class APP_Request {
                     //check if we are calling a speciffic process function
                     $this->log->debug("Trying to find out if we should call speccific function in controller");
                     $newPathArray = $this->path_arr;
-                    array_shift($newPathArray); // remove first url
+                    $this->controller_url = array_shift($newPathArray); // remove first url
+                    APP::$smarty->assign("controller_url", $this->controller_url);
                     if(isset($this->path_arr[1]) && strlen($this->path_arr[1]) > 0){
                         $this->log->debug("path_arr nr 1 is defined, trying to load specific function: " . $this->path_arr[1]);
                         $processName = "process".ucwords($this->path_arr[1]);
                         if(method_exists(APP::$controller, $processName)){
-                            $this->log->debug("calling function $processName");
-                            APP::$controller->$processName();
+                            $this->controller_action = array_shift($newPathArray); // remove first url
+                            APP::$smarty->assign("controller_action", $this->controller_action);
+                            $this->log->debug("calling function $processName with array: "  . json_encode($newPathArray));
+                            APP::$controller->$processName($newPathArray);
                         }else{
                             //$this->log->debug("$controllerClass does not have function $processName, redirecting user to correct url: " . $this->path_arr[0]);
                             //$this->jump($this->path_arr[0]);
 
-                            $this->log->debug("Calling default process function");
+                            $this->log->debug("Calling default process function with array: " . json_encode($newPathArray));
                             APP::$controller->process($newPathArray);
                         }
                     }else{ //call the default process function
-                        $this->log->debug("Calling default process function");
+                        $this->log->debug("Calling default process function with array: " . json_encode($newPathArray));
                         APP::$controller->process($newPathArray);
                     }
                 } catch (SmartyException $e) {
@@ -127,13 +132,19 @@ class APP_Request {
      * @param string $url
      * @param int $code default value is 302 - Found
      */
-    function jump($url = "", $code = 302) {
+    function jump($url = false, $code = 302) {
         if(isset($_REQUEST['redir'])){
             $url = urldecode($_REQUEST['redir']);
-            $this->log->debug("Url after decoding: " . $url);
+            $this->log->debug("Redir parameter found. Redirecting to: " . $url);
+            $url = APP::$conf['url']['site'] . $url;
+            header("Location: $url", true, $code);
+        }else if($url != false) {
+            $url = APP::$conf['url']['site'] . $url;
+            header("Location: $url", true, $code);
+        }else {
+            $this->log->debug("Jumping back to: " . $this->full_url);
+            header("Location: $this->full_url", true, $code);
         }
-        $url = APP::$conf['url']['site'] . $url;
-        header("Location: $url", true, $code);
         exit;
 
     }
