@@ -155,6 +155,7 @@ class Init {
 
         /** URLS */
         APP::$smarty->assign("site_url", APP::$conf["url"]["site"]);
+        APP::$smarty->assign("site_name", APP::$conf["name"]["site"]);
         APP::$smarty->assign("domain_url", APP::$conf["url"]["domain"]);
         APP::$smarty->assign("full_url", APP::$request->full_url);
         APP::$smarty->assign("request", $_REQUEST);
