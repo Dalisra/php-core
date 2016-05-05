@@ -2,7 +2,7 @@
 
 class APP_Controller {
 
-    private $log;
+    protected $log;
 
     function App_Controller() {
         $this->log = Logger::getLogger("com.dalisra.controller");
