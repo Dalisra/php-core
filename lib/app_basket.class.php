@@ -7,7 +7,7 @@
 
 class APP_Basket {
 
-   function APP_Basket(){
+   function __construct(){
        if(!isset($_SESSION['basket'])){
            $this->createBasket();
        }

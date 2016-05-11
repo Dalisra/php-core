@@ -4,7 +4,7 @@ class APP_Controller {
 
     protected $log;
 
-    function App_Controller() {
+    function __construct() {
         $this->log = Logger::getLogger("com.dalisra.controller");
     }
 

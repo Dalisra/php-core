@@ -10,7 +10,7 @@ class Admin_Controller extends APP_Controller
 {
     protected $log;
 
-    public function Admin_Controller() {
+    public function __construct() {
         $this->log = Logger::getLogger("com.dalisra.controllers.admin");
     }
 
