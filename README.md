@@ -60,8 +60,8 @@ This should just be necessary if you are on a Unix based system. Windows users, 
 
 Open your preferred Terminal app, go to your webserver root and run these commands:
 
-    chmod 777 core/lib/Smarty/templates_c -R
-    chmod 777 core/lib/Smarty/cache -R
+    chmod -R 777 core/lib/Smarty/templates_c
+    chmod -R 777 core/lib/Smarty/cache
 
 ## 6. Enjoy your site!
 Also, be sure to check out [the php-site project](https://github.com/Dalisra/php-site) and install lots of sites on the same webserver using the same core and **be awesome!**
