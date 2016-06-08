@@ -27,20 +27,19 @@ class APP_DB extends mysqli {
     /**
      * @var mysqli_result
      */
-    var $result;
 
-    function APP_DB($host, $user, $password, $dbname, $port = 3306) {
-    	$this->log = Logger::getLogger("com.dalisra.DB");
+    function __construct($host, $user, $password, $dbname, $port = 3306)
+    {
+        $this->log = Logger::getLogger("com.dalisra.DB");
         mysqli_report(MYSQLI_REPORT_STRICT);  // tell mysqli to throw exceptions.
         try{
-            parent::mysqli($host, $user, $password, $dbname, $port);
+            parent::__construct($host, $user, $password, $dbname, $port);
             $this->connected = true;
         }catch (Exception $e){
             $this->connected = false;
             $this->setError("Failed to connect to database." . $e);
             $this->log->error("Failed to connect to database: " . $e);
         }
-
     }
 
     /**
