@@ -74,6 +74,17 @@ class APP_Field{
         return $field;
     }
 
+    static function generatePassword($name = "password", $title="Password", $isVisibleInList = false, $isVisibleInEdit = true){
+        $field = new APP_Field();
+        $field->name = $name;
+        $field->type = APP_Field::$TYPE_PASSWORD;
+        $field->title = $title;
+        $field->description = "Password";
+        $field->visibleInList = $isVisibleInList;
+        $field->visibleInEdit = $isVisibleInEdit;
+        return $field;
+    }
+
     static function generateInt($name = "int", $title="Int", $isVisibleInList = true, $isVisibleInEdit = true){
         $field = new APP_Field();
         $field->name = $name;

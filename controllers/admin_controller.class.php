@@ -14,9 +14,9 @@ class Admin_Controller extends APP_Controller
         $this->log = Logger::getLogger("com.dalisra.controllers.admin");
     }
 
-    function process($urlArray = []) {
+    function process() {
         $this->log->debug("Starting processing");
-        if($this->checkIfLoggedIn($urlArray)){
+        if($this->checkIfLoggedIn()){
             //$menus = MenuService::getAdminMenuItems();
             //APP::$smarty->assign('menus', $menus);
             //APP::$smarty->assign('activeMenu', "Hjem");
@@ -24,7 +24,7 @@ class Admin_Controller extends APP_Controller
         }
     }
 
-    function processUsers($urlArray = []){
+    function processUsers(){
 
         //Define a page.
         $page = new APP_Page();
@@ -36,23 +36,21 @@ class Admin_Controller extends APP_Controller
         $page->title = "Brukere";
         $page->dir = "users";
 
-        //TODO: add image to user.
-        //$page->listFields[] = APP_Field::generateImage("image", "Bilde");
-        $page->listFields[] = APP_Field::generateName();
+        $page->listFields[] = APP_Field::generateImage("image", "Bilde");
+        $page->listFields[] = APP_Field::generateName("name", "Navn");
         $page->listFields[] = APP_Field::generateText("username", "Brukernavn");
-        $passwordField = APP_Field::generateText("password", "Passord", false, true); $passwordField->type = APP_Field::$TYPE_PASSWORD;
-        $page->listFields[] = $passwordField;
+        $page->listFields[] = APP_Field::generatePassword("password", "Passord");
         $page->listFields[] = APP_Field::generateInt("logins", "Antall ganger pålogget");
         $page->listFields[] = APP_Field::generateInt("created", "Dato opprettet", true, false);
         $page->listFields[] = APP_Field::generateInt("updated", "Sist redigert", true, false);
         $page->listFields[] = APP_Field::generateBoolean("active", "Aktiv", true, true);
 
-        $this->handlePage($urlArray, $page);
+        $this->handlePage($page);
     }
     /*
     * Check if logged in then return true, otherwise redirect user to login page and quit.
     */
-    function checkIfLoggedIn($urlArray = []){
+    function checkIfLoggedIn(){
         $this->log->debug("Authenticating..");
         if(APP::$auth->isLoggedIn){
             $this->log->debug(".. user is logged inn. Approved.");
@@ -60,22 +58,22 @@ class Admin_Controller extends APP_Controller
         }else{
             $this->log->debug("User is not logged inn.. redirecting..");
             //The jump will exit the processing of this request, so we do not need to return anything.
-            $this->processLogin($urlArray);
+            $this->processLogin();
             exit;
         }
     }
 
-    function processLogin($urlArray = []){
+    function processLogin(){
         if(!APP::$auth->isLoggedIn){
             $this->log->debug("Somebody is trying to login, lets display login page.");
             APP::$smarty->display('admin/pages/login.tpl');
         }else{
-            $this->process($urlArray);
+            $this->process();
         }
     }
 
-    function processLogout($urlArray = []){
-        if($this->checkIfLoggedIn($urlArray)) {
+    function processLogout(){
+        if($this->checkIfLoggedIn()) {
             $this->log->debug("Logging out!");
             APP::$auth->logout();
             APP::$request->jump("styrepanel");
@@ -84,21 +82,20 @@ class Admin_Controller extends APP_Controller
 
     /**
      * Handles page rendering.
-     * @param $urlArray array
      * @param $page APP_Page
      */
-    function handlePage($urlArray, $page){
+    function handlePage($page){
         if($this->checkIfLoggedIn()){
             APP::$smarty->assign("page", $page);
-            if(isset($urlArray[0])){
+            if(!empty(APP::$request->unConsumedUrlPaths)){
                 //some extra action has been sent for this page.
-                $this->handleAction($urlArray, $page);
+                $this->handleAction($page);
             }else{
                 //We Display default view
                 if($page->isConfig){
-                    $this->handleConfig($urlArray, $page);
+                    $this->handleConfig($page);
                 }else{
-                    $this->handleList($urlArray, $page);
+                    $this->handleList($page);
                 }
             }
         }
@@ -106,10 +103,11 @@ class Admin_Controller extends APP_Controller
 
     /**
      * Handles page rendering.
-     * @param $urlArray array
      * @param $page APP_Page
      */
-    function handleAction($urlArray, $page){
+    function handleAction($page){
+        $action = APP::$request->consumeNextPath();
+
         $item = false;
         if(isset($_REQUEST['id'])){
             $item = APP::$db->getDataById($page->table, $_REQUEST['id']);
@@ -119,7 +117,7 @@ class Admin_Controller extends APP_Controller
             APP::$smarty->assign('item', $item);
         }
 
-        if($urlArray[0] == "save") {
+        if($action == "save") {
             $this->log->debug("Handling action: save");
             if(!isset($item)) $item = array();
 
@@ -152,12 +150,12 @@ class Admin_Controller extends APP_Controller
             APP::$request->addSuccess("Lagret!");
             APP::$request->jump(APP::$request->controller_url . "/" . APP::$request->controller_action);
 
-        }elseif($urlArray[0] == "edit"){
+        }elseif($action == "edit"){
             $this->log->debug("Handling action: edit");
             if($page->isList){
                 APP::$smarty->display('admin/pages/edit.tpl');
             }
-        }elseif($urlArray[0] == "delete") {
+        }elseif($action == "delete") {
             $this->log->debug("Handling action: delete");
             if(isset($item)){
                 //TODO: delete all subresources.
@@ -173,9 +171,8 @@ class Admin_Controller extends APP_Controller
             }
 
         }else{
-            $action = array_shift($urlArray); //remove this unknown action from urlArray list (ignore)
-            $this->log->debug("Unknown action: " . $action . ", ignoring it..");
-            $this->handlePage($urlArray, $page); //restart processing the request.
+            $this->log->error("Unknown action: " . $action . ", ignoring it..");
+            $this->handlePage($page); //restart processing the request.
         }
     }
 
@@ -187,7 +184,7 @@ class Admin_Controller extends APP_Controller
      * @param array $urlArray array
      * @param $page APP_Page
      */
-    function handleList($urlArray = [], $page){
+    function handleList($page){
         $params = array();
         $params['from'] = $page->table;
         if($page->belongsTo){

@@ -8,7 +8,7 @@ class APP_Controller {
         $this->log = Logger::getLogger("com.dalisra.controller");
     }
 
-    function process($urlArray){
+    function process(){
         $this->displayPageNotFoundError();
     }
 

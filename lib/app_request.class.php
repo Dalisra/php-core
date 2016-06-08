@@ -12,6 +12,8 @@ class APP_Request {
     var $full_url;
     var $controller_url;
     var $controller_action;
+    var $consumedUrlPaths = [];
+    var $unConsumedUrlPaths = [];
 
     function __construct() {
         $this->log = Logger::getLogger("com.dalisra.request");
@@ -34,7 +36,19 @@ class APP_Request {
         $this->url = substr($this->url,$siteUrlLength);
         $this->log->debug("New Url is: " . $this->url);
         $this->path_arr = explode('/', $this->url);
+        $this->unConsumedUrlPaths = $this->path_arr;
         $this->log->debug("Path exploded is: " . json_encode($this->path_arr));
+    }
+
+    function consumeNextPath(){
+        if(!isset($this->unConsumedUrlPaths)) $this->unConsumedUrlPaths = [];
+        if(!empty($this->unConsumedUrlPaths)){
+
+
+            return $this->consumedUrlPaths[] = array_shift($this->unConsumedUrlPaths);
+        }
+
+        return null;
     }
 
     function processRequest(){
@@ -57,27 +71,22 @@ class APP_Request {
                 try {
                     //check if we are calling a speciffic process function
                     $this->log->debug("Trying to find out if we should call speccific function in controller");
-                    $newPathArray = $this->path_arr;
-                    $this->controller_url = array_shift($newPathArray); // remove first url
+                    $this->controller_url = $this->consumeNextPath();
                     APP::$smarty->assign("controller_url", $this->controller_url);
                     if(isset($this->path_arr[1]) && strlen($this->path_arr[1]) > 0){
                         $this->log->debug("path_arr nr 1 is defined, trying to load specific function: " . $this->path_arr[1]);
                         $processName = "process".ucwords($this->path_arr[1]);
                         if(method_exists(APP::$controller, $processName)){
-                            $this->controller_action = array_shift($newPathArray); // remove first url
+                            $this->controller_action = $this->consumeNextPath();
                             APP::$smarty->assign("controller_action", $this->controller_action);
-                            $this->log->debug("calling function $processName with array: "  . json_encode($newPathArray));
-                            APP::$controller->$processName($newPathArray);
+                            APP::$controller->$processName();
                         }else{
                             //$this->log->debug("$controllerClass does not have function $processName, redirecting user to correct url: " . $this->path_arr[0]);
                             //$this->jump($this->path_arr[0]);
-
-                            $this->log->debug("Calling default process function with array: " . json_encode($newPathArray));
-                            APP::$controller->process($newPathArray);
+                            APP::$controller->process();
                         }
                     }else{ //call the default process function
-                        $this->log->debug("Calling default process function with array: " . json_encode($newPathArray));
-                        APP::$controller->process($newPathArray);
+                        APP::$controller->process();
                     }
                 } catch (SmartyException $e) {
                     APP::$log->error($e);
