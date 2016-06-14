@@ -13,6 +13,20 @@ $conf['devel'] = array();
 
 /* START SITE STUFF */
 
+/* Routing options */
+$conf['prod']['routing']['enabled'] = false;
+$conf['test']['routing']['enabled'] = false;
+$conf['devel']['routing']['enabled'] = true;
+
+$conf['prod']['routing']['defaultController'] = 'index';
+$conf['test']['routing']['defaultController'] = 'index';
+$conf['devel']['routing']['defaultController'] = 'index';
+
+$conf['prod']['routing']['defaultAction'] = '';
+$conf['test']['routing']['defaultAction'] = '';
+$conf['devel']['routing']['defaultAction'] = '';
+/* End Routing options */
+
 /* Full path to the content */
 $conf['prod']['path']['full'] = ROOT . DS;
 $conf['test']['path']['full'] = ROOT . DS;

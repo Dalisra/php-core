@@ -39,6 +39,41 @@ class APP_Request {
         $this->unConsumedUrlPaths = $this->path_arr;
         $this->log->debug("Path exploded is: " . json_encode($this->path_arr));
     }
+    
+    function processRequestWithRouting() {
+        $this->log->debug('Posted url: ' . $this->url);
+
+        $router = new APP_Router($this->url);
+        $router->parse();
+
+        $controller = $router->getController();
+        $action = $router->getAction();
+
+        APP::$controller = APP_Controller::factory($controller);
+        $actionName = APP_Controller::getActionName($action);
+
+        $this->log->debug('Controller was set to: ' . get_class(APP::$controller));
+        $this->log->debug('Action was set to: ' . $actionName);
+
+        try {
+            if($action == '404') {
+                $this->log->debug('File was not found. Displaying 404 error');
+                APP::$controller->displayPageNotFoundError();
+            }
+            else {
+                if(method_exists(APP::$controller, $actionName)) {
+                    $this->log->debug('Method exists. Calling ' . get_class(APP::$controller) . "->" . $actionName);
+                    APP::$controller->$actionName();
+                } else {
+                    $this->log->debug(get_class(APP::$controller) . " does not have function $actionName, redirecting user to correct url: " . $this->path_arr[0]);
+                    $this->jump($this->path_arr[0]);
+                }
+            }
+        } catch (SmartyException $e) {
+            $this->log->error($e);
+            APP::$controller->displayPageNotImplementedError();
+        }
+    }
 
     function consumeNextPath(){
         if(!isset($this->unConsumedUrlPaths)) $this->unConsumedUrlPaths = [];
@@ -54,16 +89,16 @@ class APP_Request {
     function processRequest(){
         $this->log->debug("processRequest() method has been called, starting process..");
         //TODO: implement url_mapping
-        if(isset($this->path_arr[0])){
+        if(isset($this->path_arr[0])){ // 1a. If url exists, continue processing -> OK
             $controllerName = strtolower($this->path_arr[0]);
             //check if its index
-            if($controllerName == ''){
+            if($controllerName == ''){ // 2. If empty entry, set default controller -> OK
                 $controllerName = 'index';
             }
             $this->log->debug("Controller name that we will be calling is: " . $controllerName);
             //lets find out if we have any controller
             $controllerFile = APP::$conf['path']['controllers'] . $controllerName . '.class.php';
-            if(file_exists($controllerFile)){ //controller exists we try to load it
+            if(file_exists($controllerFile)){ // 3. controller exists we try to load it
                 $this->log->debug("Controller file exists on disk, we try to load it!");
                 require_once($controllerFile);
                 $controllerClass = ucwords($controllerName) . "_Controller";
@@ -93,13 +128,13 @@ class APP_Request {
                     APP::$controller->displayPageNotImplementedError();
                 }
 
-            }else{ //controller does not exists, we display 404 error with parent controller
+            }else{ // 3b. controller does not exists, we display 404 error with parent controller -> OK
                 $this->log->debug("Controller does not exist, we load default controller and display 404 error.");
                 require_once APP::$conf['path']['core']['controllers'] . 'app_controller.class.php';
                 APP::$controller = new APP_Controller();
                 APP::$controller->displayPageNotFoundError();
             }
-        }else{
+        }else{ // 1b. If no url, then 503 -> OK
             $this->log->debug("Path Arr is empty.. Something must be wrong, returning 503 error");
             //Something went wrong with processing url, we display 503 error.
             APP::$smarty->display('error_pages/503.tpl');
