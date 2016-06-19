@@ -35,7 +35,7 @@ $conf['devel']['path']['services'] = $conf['devel']['path']['full']. 'services' 
 
 /* Path to the view / templates
  * !OBS remember to override smarty path for templates if you override this one!
- * $conf['evn']['smarty']['templates'] depends on this!
+ * $conf['env']['smarty']['templates'] depends on this!
  * TODO: find out a better way for this to work.
  */
 $conf['prod']['path']['views'] = $conf['prod']['path']['full'] . 'views' . DS;
@@ -65,21 +65,6 @@ $conf['prod']['path']['lib'] = CORE . DS . 'lib' . DS;
 $conf['test']['path']['lib'] = CORE . DS . 'lib' . DS;
 $conf['devel']['path']['lib'] = CORE . DS . 'lib' . DS;
 
-/* Path to the core controllers */
-$conf['prod']['path']['core']['controllers'] = CORE . DS . 'controllers' . DS;
-$conf['test']['path']['core']['controllers'] = CORE . DS . 'controllers' . DS;
-$conf['devel']['path']['core']['controllers'] = CORE . DS . 'controllers' . DS;
-
-/* Path to the core views */
-$conf['prod']['path']['core']['views'] = CORE . DS . 'views' . DS;
-$conf['test']['path']['core']['views'] = CORE . DS . 'views' . DS;
-$conf['devel']['path']['core']['views'] = CORE . DS . 'views' . DS;
-
-/* Path to the core models */
-$conf['prod']['path']['core']['models'] = CORE . DS . 'models' . DS;
-$conf['test']['path']['core']['models'] = CORE . DS . 'models' . DS;
-$conf['devel']['path']['core']['models'] = CORE . DS . 'models' . DS;
-
 /* Smarty configuration */
 $conf['prod']['path']['smarty'] = $conf['prod']['path']['lib'] . 'Smarty' . DS . 'Smarty-3.1.29' . DS;
 $conf['test']['path']['smarty'] = $conf['prod']['path']['lib'] . 'Smarty' . DS . 'Smarty-3.1.29' . DS;
@@ -89,9 +74,9 @@ $conf['prod']['smarty']['templates_c'] = $conf['prod']['path']['lib'] . 'Smarty'
 $conf['test']['smarty']['templates_c'] = $conf['prod']['path']['lib'] . 'Smarty' . DS . 'templates_c' . DS;
 $conf['devel']['smarty']['templates_c'] = $conf['devel']['path']['lib'] . 'Smarty' . DS . 'templates_c' . DS;
 
-$conf['prod']['smarty']['templates'] = [$conf['prod']['path']['views'], $conf['prod']['path']['core']['views']];
-$conf['test']['smarty']['templates'] = [$conf['prod']['path']['views'], $conf['test']['path']['core']['views']];
-$conf['devel']['smarty']['templates'] = [$conf['devel']['path']['views'], $conf['devel']['path']['core']['views']];
+$conf['prod']['smarty']['templates'] = $conf['prod']['path']['views'];
+$conf['test']['smarty']['templates'] = $conf['prod']['path']['views'];
+$conf['devel']['smarty']['templates'] = $conf['devel']['path']['views'];
 
 $conf['prod']['smarty']['cache'] = $conf['prod']['path']['lib'] . 'Smarty' . DS . 'cache' . DS;
 $conf['test']['smarty']['cache'] = $conf['prod']['path']['lib'] . 'Smarty' . DS . 'cache' . DS;

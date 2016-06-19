@@ -22,9 +22,7 @@ spl_autoload_register(function ($class_name) {
         APP::$conf['path']['controllers'],
         APP::$conf['path']['services'],
         APP::$conf['path']['models'],
-        APP::$conf['path']['core']['controllers'],
-        APP::$conf['path']['lib'],
-        APP::$conf['path']['core']['models'],
+        APP::$conf['path']['lib']
     ];
     $fileName = strtolower($class_name) . '.class.php';
     foreach($folderNames as $folderName){
