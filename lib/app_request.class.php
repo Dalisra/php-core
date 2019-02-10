@@ -72,13 +72,11 @@ class APP_Request {
                 //check if we are calling a speciffic process function
                 $this->log->debug("Trying to find out if we should call speccific function in controller");
                 $this->controller_url = $this->consumeNextPath();
-                // APP::$smarty->assign("controller_url", $this->controller_url);
                 if(isset($this->path_arr[1]) && strlen($this->path_arr[1]) > 0){
                     $this->log->debug("path_arr nr 1 is defined, trying to load specific function: " . $this->path_arr[1]);
                     $processName = "process".ucwords($this->path_arr[1]);
                     if(method_exists(APP::$controller, $processName)){
                         $this->controller_action = $this->consumeNextPath();
-                        APP::$smarty->assign("controller_action", $this->controller_action);
                         return APP::$controller->$processName();
                     }else{
                         //$this->log->debug("$controllerClass does not have function $processName, redirecting user to correct url: " . $this->path_arr[0]);
@@ -164,10 +162,18 @@ class APP_Request {
     /**
      * Greacefuly close the application.
      */
-    function quit() {
-        if (APP::$conf['showTimer']){
-            echo "<!--Request processed in: " . $GLOBALS['timer']->stop() . "-->";
+    function quit($data) {
+        $response = array("data"=>$data);
+        //at the end we show time used to process the message
+        if (APP::$conf['showTimer']) {
+            $time = $GLOBALS['timer']->stop();
+            $response["timer"] = array("message"=>"Request processed in: " . $time, "time"=>$time);
+            $response["path"] = APP::$request->full_url;
+        }else{
+            APP::$log->debug("Request processed in: " . $GLOBALS['timer']->stop());
+            // Apache logs: take a look at that: http://logging.apache.org/log4php/download.html
         }
+        echo json_encode($response);
         exit;
     }
 

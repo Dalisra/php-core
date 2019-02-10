@@ -22,7 +22,6 @@ class Init {
         $this->initializeDBConnection();
         $this->initializeRequestClass();
         $this->initializeAuthentication();
-        $this->initializeGlobals();
         $this->checkIfWeHaveDBConnection();
     }
 
@@ -33,7 +32,6 @@ class Init {
 
     private function startSession(){
         ob_start();
-        session_start();
         //Setting default time zone for the server.
         date_default_timezone_set("CET");
     }
@@ -107,26 +105,17 @@ class Init {
             APP::$log->debug("Got pre_act: " . $_REQUEST['pre_act']);
             if ($_REQUEST['pre_act'] == "do_login") {
                 usleep(500000);
-                if (isset($_POST['login'])) {
-                    list($u, $p) = $_POST["login"];
-                    APP::$auth->login($u, $p);
-                    APP::$request->jump();
-                }
-                else{
-                    APP::$request->addError("Username and password can not be empty.");
-                    APP::$request->jump();
+                if (isset($_POST['username']) && isset($_POST['password'])) {
+                    if(APP::$auth->login($_POST['username'], $_POST['password'])){
+                        return APP::$request->quit(array("apiKey" => APP::$auth->apiKey));
+                    }
                 }
             } elseif ($_REQUEST['pre_act'] == "do_logout") {
-                APP::$auth->logout();
-                APP::$request->jump();
-            } else {
-                APP::$request->addError("Unknown Command");
+                if(APP::$auth->logout()){
+                    return APP::$request->quit("ok");
+                }
             }
+            APP::$request->quit("error");
         }
-        //APP::$smarty->assign("isLoggedIn", APP::$auth->isLoggedIn);
-    }
-
-    private function initializeGlobals(){
-        APP::$request->removeMessages();
     }
 }

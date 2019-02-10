@@ -194,7 +194,12 @@ class APP_DB extends mysqli {
                         $where .=  " AND ";
                     }
                     else {
-                        $where .= $this->escape_string($key) . "='" . $this->escape_string($value) . "' AND ";
+                        if (strpos($value, '%') !== false){
+                            //TODO: find more correct way to do this.
+                            $where .= $this->escape_string($key) . " LIKE '" . $this->escape_string($value) . "' AND ";
+                        }else{
+                            $where .= $this->escape_string($key) . "='" . $this->escape_string($value) . "' AND ";
+                        }
                     }
                 }
                 $where = substr($where, 0, -5); //removing " AND"
