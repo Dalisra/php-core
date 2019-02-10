@@ -20,15 +20,10 @@ class Init {
         $this->initializeConfig();
         $this->initializeLogger();
         $this->initializeDBConnection();
-        $this->initializeSmarty();
         $this->initializeRequestClass();
         $this->initializeAuthentication();
-        $this->initializeBasket();
         $this->initializeGlobals();
         $this->checkIfWeHaveDBConnection();
-        //use this to test smarty configuration
-        //APP::$smarty->testInstall();
-        //exit;
     }
 
     private function includeSiteTools(){
@@ -71,18 +66,6 @@ class Init {
             APP::$db = new APP_DB($db_conf['host'], $db_conf['user'], $db_conf['password'], $db_conf['database'], $db_conf['port'], $db_conf['prefix']);
             unset($db_conf);
         }
-    }
-
-    private function initializeSmarty(){
-        /* Smarty setup  - Do not edit anything here, do it in config file instead! */
-        define('SMARTY_DIR', APP::$conf['path']['smarty']);
-        require APP::$conf['path']['smarty'].'Smarty.class.php';
-        APP::$smarty = new Smarty();
-        APP::$smarty->setTemplateDir(APP::$conf['smarty']['templates']);
-        APP::$smarty->setCompileDir(APP::$conf['smarty']['templates_c']);
-        APP::$smarty->setCacheDir(APP::$conf['smarty']['cache']);
-        APP::$smarty->setConfigDir(APP::$conf['smarty']['config']);
-        APP::$smarty->addPluginsDir(APP::$conf['smarty']['plugins']);
     }
 
     private function initializeRequestClass(){
@@ -140,39 +123,10 @@ class Init {
                 APP::$request->addError("Unknown Command");
             }
         }
-        APP::$smarty->assign("isLoggedIn", APP::$auth->isLoggedIn);
-    }
-
-    private function initializeBasket(){
-        require 'app_basket.class.php';
-        APP::$basket = new APP_Basket();
+        //APP::$smarty->assign("isLoggedIn", APP::$auth->isLoggedIn);
     }
 
     private function initializeGlobals(){
-
-        /** DEBUG info */
-        APP::$smarty->assign("debug_compile_time", APP::$conf['smarty']['debug_compile_time']);
-
-        /** URLS */
-        APP::$smarty->assign("site_url", APP::$conf["url"]["site"]);
-        APP::$smarty->assign("site_name", APP::$conf["name"]["site"]);
-        APP::$smarty->assign("domain_url", APP::$conf["url"]["domain"]);
-        APP::$smarty->assign("full_url", APP::$request->full_url);
-        APP::$smarty->assign("request", $_REQUEST);
-
-        //TODO: those should not be needed.
-        APP::$smarty->assign("url", APP::$request->url);
-        APP::$smarty->assign("url_path", APP::$request->path_arr);
-
-        APP::$smarty->assign("images_path", APP::$conf['path']['images']);
-        
-        APP::$smarty->assign("messages", APP::$request->getMessages());
         APP::$request->removeMessages();
-        
-        /*
-         * setting environment variable so that design can do some stuff depending on environment
-         * Example could be displaying google tag manager or google maps only in test and production.
-         */
-        APP::$smarty->assign("env", $this->env);
     }
 }

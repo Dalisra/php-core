@@ -7,10 +7,10 @@
  */
 class APP {
 
-  /**
-   * @var APP_Page
-   */
-  static $page;
+  	/**
+   	* @var APP_Page
+   	*/
+  	static $page;
 	/**
 	 *
 	 * @var APP_Request
@@ -35,23 +35,11 @@ class APP {
 	 */
 	static $conf;
 
-    /**
-     * @var App_Basket
-     */
-    static $basket;
-
 	/**
 	 * Tells us what device user is using.
 	 * @var string
 	 */
 	static $style;
-	
-	/**
-	 * Smarty object
-     * @package Smarty
-     * @var Smarty
-	 */
-	static $smarty;
 
     /**
      * Logger

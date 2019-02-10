@@ -68,41 +68,44 @@ class APP_Request {
                 require_once($controllerFile);
                 $controllerClass = ucwords($controllerName) . "_Controller";
                 APP::$controller = new $controllerClass();
-                try {
-                    //check if we are calling a speciffic process function
-                    $this->log->debug("Trying to find out if we should call speccific function in controller");
-                    $this->controller_url = $this->consumeNextPath();
-                    APP::$smarty->assign("controller_url", $this->controller_url);
-                    if(isset($this->path_arr[1]) && strlen($this->path_arr[1]) > 0){
-                        $this->log->debug("path_arr nr 1 is defined, trying to load specific function: " . $this->path_arr[1]);
-                        $processName = "process".ucwords($this->path_arr[1]);
-                        if(method_exists(APP::$controller, $processName)){
-                            $this->controller_action = $this->consumeNextPath();
-                            APP::$smarty->assign("controller_action", $this->controller_action);
-                            APP::$controller->$processName();
-                        }else{
-                            //$this->log->debug("$controllerClass does not have function $processName, redirecting user to correct url: " . $this->path_arr[0]);
-                            //$this->jump($this->path_arr[0]);
-                            APP::$controller->process();
-                        }
-                    }else{ //call the default process function
-                        APP::$controller->process();
+                
+                //check if we are calling a speciffic process function
+                $this->log->debug("Trying to find out if we should call speccific function in controller");
+                $this->controller_url = $this->consumeNextPath();
+                // APP::$smarty->assign("controller_url", $this->controller_url);
+                if(isset($this->path_arr[1]) && strlen($this->path_arr[1]) > 0){
+                    $this->log->debug("path_arr nr 1 is defined, trying to load specific function: " . $this->path_arr[1]);
+                    $processName = "process".ucwords($this->path_arr[1]);
+                    if(method_exists(APP::$controller, $processName)){
+                        $this->controller_action = $this->consumeNextPath();
+                        APP::$smarty->assign("controller_action", $this->controller_action);
+                        return APP::$controller->$processName();
+                    }else{
+                        //$this->log->debug("$controllerClass does not have function $processName, redirecting user to correct url: " . $this->path_arr[0]);
+                        //$this->jump($this->path_arr[0]);
+                        return APP::$controller->process();
                     }
-                } catch (SmartyException $e) {
-                    APP::$log->error($e);
-                    APP::$controller->displayPageNotImplementedError();
+                }else{ //call the default process function
+                    return APP::$controller->process();
                 }
+                
 
             }else{ //controller does not exists, we display 404 error with parent controller
                 $this->log->debug("Controller does not exist, we load default controller and display 404 error.");
                 require_once APP::$conf['path']['lib'] . 'app_controller.class.php';
                 APP::$controller = new APP_Controller();
-                APP::$controller->displayPageNotFoundError();
+                return APP::$controller->displayPageNotFoundError();
             }
         }else{
             $this->log->debug("Path Arr is empty.. Something must be wrong, returning 503 error");
             //Something went wrong with processing url, we display 503 error.
-            APP::$smarty->display('error_pages/503.tpl');
+            // http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+            $protocol = "HTTP/1.0";
+            if ( "HTTP/1.1" == $_SERVER["SERVER_PROTOCOL"] ){
+                $protocol = "HTTP/1.1";
+            }
+            header( "$protocol 503 Server error", true, 503 );
+            return array("code"=>501, "message"=>"Server error");
         }
     }
 

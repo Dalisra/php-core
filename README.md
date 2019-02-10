@@ -22,15 +22,6 @@ How to do rewriting with other web-servers might be documented later._
 Go to your webservers root folder, and add a new file called ".htaccess".
 Then open the file, paste the following content and save the file.
 
-    #php_flag display_startup_errors on
-    #php_flag display_errors on
-    #php_flag html_errors on
-
-    # enable PHP error logging
-    #php_flag  log_errors on
-    #php_value error_log  /var/www/html/logs/error.log
-
-    #Options +FollowSymLinks -MultiViews -indexes
     RewriteEngine on
     RewriteRule ^$ site-default/webroot/ [L]
     RewriteRule ^(.*)$ site-default/webroot/$1 [L]
@@ -92,49 +83,20 @@ The directory tree below shows the complete directory strucure, with logs folder
     │   ├───config
     │   ├───controllers
     │   ├───lib
-    │   │   ├───log4php
-    │   │   │   └───2.3.0
-    │   │   │       ├───appenders
-    │   │   │       ├───configurators
-    │   │   │       ├───filters
-    │   │   │       ├───helpers
-    │   │   │       ├───layouts
-    │   │   │       ├───pattern
-    │   │   │       ├───renderers
-    │   │   │       └───xml
-    │   │   └───Smarty
-    │   │       ├───cache
-    │   │       ├───config
-    │   │       ├───plugins
-    │   │       ├───Smarty-3.1.14
-    │   │       │   ├───plugins
-    │   │       │   └───sysplugins
-    │   │       ├───Smarty-3.1.29
-    │   │       │   ├───plugins
-    │   │       │   └───sysplugins
-    │   │       └───templates_c
+    │   │   └───log4php
+    │   │       └───2.3.0
+    │   │           ├───appenders
+    │   │           ├───configurators
+    │   │           ├───filters
+    │   │           ├───helpers
+    │   │           ├───layouts
+    │   │           ├───pattern
+    │   │           ├───renderers
+    │   │           └───xml
     │   ├───models
-    │   ├───tests
-    │   └───views
-    │       ├───admin
-    │       └───error_pages
-    └───site-default
+    │   └───tests
+    ├───site-default
     │   ├───config
     │   ├───controllers
-    │   ├───views
-    │   │   ├───components
-    │   │   ├───error_pages
-    │   │   ├───layouts
-    │   │   └───pages
     │   └───webroot
-    │      ├───bootstrap-3.3.6
-    │      │   ├───css
-    │      │   ├───fonts
-    │      │   └───js
-    │      ├───css
-    │      ├───font-awesome-4.5.0
-    │      │   ├───css
-    │      │   └───fonts
-    │      ├───jquery-1.12.1
-    │      └───js
-    ├───logs
+    └───logs

@@ -17,10 +17,10 @@ class APP_Auth {
 
     function login($username, $password) {
         $params['from'] = APP::$conf['auth']['table'];
-        $params['where'] = array('username' => $username, 'password' => md5($password), 'active'=>1);
+        $params['where'] = array('username' => $username, 'active'=>1);
         $params['limit'] = 1;
         $reply = APP::$db->getData($params);
-        if ($reply && isset($reply[0])) {
+        if ($reply && isset($reply[0]) && password_verify($password, $reply[0].password)) {
             // good user/pass
             $_SESSION["login"] = true;
             $_SESSION["user"] = $reply[0];
