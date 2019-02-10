@@ -40,8 +40,7 @@ class APP_Auth {
                 $user['logins'] += 1;
             }
             $apiKey = random_str(32);
-            $user['apiKey'] = $apiKey;
-            APP::$db->updateDataById($params['from'], $user, $reply[0]['id']);
+            APP::$db->updateDataById($params['from'], array('apiKey'=>$apiKey), $reply[0]['id']);
             $this->apiKey = $apiKey;
             return true;
         }

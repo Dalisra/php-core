@@ -100,17 +100,18 @@ class Init {
     private function initializeAuthentication(){
         require 'app_auth.class.php';
         APP::$auth = new APP_Auth();
+        $data = json_decode(file_get_contents('php://input'), true);
 
-        if (isset($_REQUEST['pre_act'])) {
-            APP::$log->debug("Got pre_act: " . $_REQUEST['pre_act']);
-            if ($_REQUEST['pre_act'] == "do_login") {
+        if (isset($data['pre_act'])) {
+            APP::$log->debug("Got pre_act: " . $data['pre_act']);
+            if ($data['pre_act'] == "do_login") {
                 usleep(500000);
-                if (isset($_POST['username']) && isset($_POST['password'])) {
-                    if(APP::$auth->login($_POST['username'], $_POST['password'])){
+                if (isset($data['username']) && isset($data['password'])) {
+                    if(APP::$auth->login($data['username'], $data['password'])){
                         return APP::$request->quit(array("apiKey" => APP::$auth->apiKey));
                     }
                 }
-            } elseif ($_REQUEST['pre_act'] == "do_logout") {
+            } elseif ($data['pre_act'] == "do_logout") {
                 if(APP::$auth->logout()){
                     return APP::$request->quit("ok");
                 }

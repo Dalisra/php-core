@@ -19,9 +19,9 @@ $conf['test']['path']['full'] = ROOT . DS;
 $conf['devel']['path']['full'] = ROOT . DS;
 
 /* Full path to the images */
-$conf['prod']['path']['images'] = ROOT . DS . ".." . DS . "img";
-$conf['test']['path']['images'] = ROOT . DS . ".." . DS . "img";
-$conf['devel']['path']['images'] = ROOT . DS . ".." . DS . "img";
+$conf['prod']['path']['images'] = WWW . DS . "img" . DS;
+$conf['test']['path']['images'] = WWW . DS . "img" . DS;
+$conf['devel']['path']['images'] = WWW . DS . "img" . DS;
 
 /* Path to controllers */
 $conf['prod']['path']['controllers'] = $conf['devel']['path']['full'] . 'controllers' . DS;
